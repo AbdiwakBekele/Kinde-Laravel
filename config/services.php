@@ -35,4 +35,21 @@ return [
         ],
     ],
 
+    'kinde' => [
+        'client_id' => env('KINDE_CLIENT_ID'),
+        'client_secret' => env('KINDE_CLIENT_SECRET'),
+        'redirect' => env('KINDE_REDIRECT_URI'),
+        'base_uri' => env('KINDE_DOMAIN'),
+        'api_token' => env('KINDE_API_TOKEN'),
+        'logout_redirect' => env('KINDE_LOGOUT_REDIRECT'),
+    ],
+
+    'kinde_m2m' => [
+        'client_id' => env('KINDE_M2M_CLIENT_ID'),
+        'client_secret' => env('KINDE_M2M_CLIENT_SECRET'),
+        'audience' => env('KINDE_M2M_API_AUDIENCE'),
+        'base_uri' => env('KINDE_DOMAIN'),
+    ],
+
+
 ];
