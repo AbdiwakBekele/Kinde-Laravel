@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KindeUserController;
+use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,3 +20,16 @@ Route::get('/dashboard', function () {
 
 Route::view('/delete-kinde-user', 'delete-user'); // Show the form
 Route::delete('/kinde/users/{userId}', [KindeUserController::class, 'delete']);
+
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])
+    ->name('password.request');
+
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])
+    // ->middleware('throttle:6,1')
+    ->name('password.email');
+
+// Quick test routes
+Route::post('/users/{userId}/reset-password', function (string $userId, App\Services\KindeUserManagementService $svc) {
+    $svc->requestPasswordReset($userId);
+    return 'OK';
+});

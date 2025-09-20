@@ -28,12 +28,12 @@ class AuthController extends Controller {
 
     public function handleKindeCallback(Request $request) {
 
-        // $expectedState = session('oauth_state');
-        // $receivedState = $request->get('state');
+        $expectedState = session('oauth_state');
+        $receivedState = $request->get('state');
 
-        // if (!$expectedState || $expectedState !== $receivedState) {
-        //     abort(403, 'Invalid state value');
-        // }
+        if (!$expectedState || $expectedState !== $receivedState) {
+            abort(403, 'Invalid state value');
+        }
 
         $response = Http::asForm()->post(config('services.kinde.base_uri') . '/oauth2/token', [
             'grant_type' => 'authorization_code',
@@ -45,11 +45,14 @@ class AuthController extends Controller {
 
         $tokenData = $response->json();
 
-        // Decode ID token to extract user info
-        $idToken = $tokenData['id_token'];
-        $user = json_decode(base64_decode(explode('.', $idToken)[1]), true);
+        Log::info('AUth');
+        Log::info($tokenData);
 
-        Log::info($user);
+        // Decode ID token to extract user info
+        // $idToken = $tokenData['id_token'];
+        // $user = json_decode(base64_decode(explode('.', $idToken)[1]), true);
+
+        // Log::info($user);
 
         return redirect('/dashboard');
     }

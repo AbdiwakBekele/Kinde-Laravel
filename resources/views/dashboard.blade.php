@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
 
-<body>
+    <body>
 
-    This is Dashboard
+        This is Dashboard
 
-    <br>
-    <a href="{{ url('/delete-kinde-user') }}">Delete Users</a>
-    <br>
-    <a href="{{ url('/logout') }}">Logout</a>
-
-
-
-
-</body>
+        <br>
+        <a href="{{ url('/delete-kinde-user') }}">Delete Users</a><br>
+        <a href="{{ url('/forgot-password') }}">Forget Password</a>
+        <br>
+        <a href="{{ url('/logout') }}">Logout</a>
+    </body>
 
 </html>
