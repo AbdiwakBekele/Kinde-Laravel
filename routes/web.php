@@ -33,3 +33,10 @@ Route::post('/users/{userId}/reset-password', function (string $userId, App\Serv
     $svc->requestPasswordReset($userId);
     return 'OK';
 });
+
+
+Route::get('/tools/reset-password', [PasswordResetController::class, 'showForm'])->name('tools.reset.form');
+Route::post('/tools/reset-password/set', [PasswordResetController::class, 'setPassword'])->name('tools.reset.set');
+Route::post('/tools/reset-password/request', [PasswordResetController::class, 'requestReset'])->name('tools.reset.request');
+Route::post('/tools/reset-password/set-permanent', [PasswordResetController::class, 'setPermanentPassword'])
+    ->name('tools.reset.set_permanent');

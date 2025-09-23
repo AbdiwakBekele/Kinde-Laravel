@@ -73,6 +73,19 @@ class KindeUserManagementService {
         }
     }
 
+    public function setPermanentPassword(string $userId, string $plainPassword): void {
+        $token = $this->m2m->getToken();
+        $resp = Http::withToken($token)->put($this->base() . "/api/v1/users/{$userId}/password", [
+            'hashed_password' => Hash::make($plainPassword),
+            'hashing_method' => 'bcrypt',
+            'is_temporary_password' => false, // <— key difference
+        ]);
+        if (!$resp->ok()) {
+            throw new \RuntimeException('Set permanent password failed: ' . $resp->body());
+        }
+    }
+
+
     public function deleteUser(string $userId) {
         $token = $this->m2m->getAccessToken();
 
