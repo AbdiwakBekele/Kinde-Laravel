@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KindeUserController;
 use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KindeOrgUserTestController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,3 +42,12 @@ Route::post('/tools/reset-password/set', [PasswordResetController::class, 'setPa
 Route::post('/tools/reset-password/request', [PasswordResetController::class, 'requestReset'])->name('tools.reset.request');
 Route::post('/tools/reset-password/set-permanent', [PasswordResetController::class, 'setPermanentPassword'])
     ->name('tools.reset.set_permanent');
+
+
+
+
+Route::get('/kinde/users/form', [KindeUserController::class, 'form']);
+Route::post('/kinde/users/add', [KindeUserController::class, 'addUsers'])->name('kinde.users.add');
+
+Route::get('/kinde/test/form', [KindeOrgUserTestController::class, 'form']);
+Route::post('/kinde/test/run', [KindeOrgUserTestController::class, 'run'])->name('kinde.test.run');
