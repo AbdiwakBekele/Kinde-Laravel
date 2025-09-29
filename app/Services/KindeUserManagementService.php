@@ -86,6 +86,22 @@ class KindeUserManagementService {
     }
 
 
+    public function addUsersToOrg(string $orgCode, array $users, string $token): array {
+        $base = rtrim(config('services.kinde.base_uri'), '/');
+        $url  = "{$base}/api/v1/organizations/{$orgCode}/users";
+
+        // $users must be an array of { id, roles?, permissions? }
+        $res = Http::withToken($token)
+            ->withHeaders(['Content-Type' => 'application/json'])
+            ->post($url, ['users' => $users]);
+
+        return [
+            'status' => $res->status(),
+            'raw'    => $res->body(),
+            'json'   => json_decode($res->body(), true),
+        ];
+    }
+
     public function deleteUser(string $userId) {
         $token = $this->m2m->getAccessToken();
 
