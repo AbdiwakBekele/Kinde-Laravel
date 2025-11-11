@@ -5,7 +5,7 @@ use App\Http\Controllers\KindeUserController;
 use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KindeOrgUserTestController;
-
+use App\Http\Controllers\KindeOrgPermissionReproController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -51,3 +51,6 @@ Route::post('/kinde/users/add', [KindeUserController::class, 'addUsers'])->name(
 
 Route::get('/kinde/test/form', [KindeOrgUserTestController::class, 'form']);
 Route::post('/kinde/test/run', [KindeOrgUserTestController::class, 'run'])->name('kinde.test.run');
+
+Route::get('/kinde/perm/form', [KindeOrgPermissionReproController::class, 'form'])->name('kinde.perm.form');
+Route::post('/kinde/perm/run',  [KindeOrgPermissionReproController::class, 'run'])->name('kinde.perm.run');

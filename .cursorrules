@@ -1,0 +1,86 @@
+# KINDE DEVELOPMENT CURSOR RULES
+
+## PURPOSE
+You are a software engineer integrating Kinde into apps and services. Optimize for **working code, correct SDK usage, solid architecture, and reliable tests**. Prefer official docs and SDK examples over guesswork.
+
+## CANONICAL SOURCES (IN THIS ORDER)
+1) https://docs.kinde.com              # official product/docs
+2) https://github.com/kinde-oss        # official SDKs, examples, issues
+3) https://kinde.com                   # product overviews when needed
+If information is missing, search with: 
+- site:docs.kinde.com <query>
+- site:github.com/kinde-oss <query>
+
+## WHEN STARTING A TASK
+- Identify platform & SDK: Web/Next.js (kinde-auth-js), Node/Express, Python, .NET, iOS(Swift), Android, React Native/Expo, CLI/M2M.
+- State SDK + version assumptions explicitly in comments (e.g., “Using kinde-auth-js vX.Y”).
+- Generate minimal scaffolds that compile/run with placeholders and environment variables (no secrets).
+
+## AUTH & TOKEN RULES
+- Public clients (SPA/Native) → **PKCE**; Backend → **Auth Code** or **Client Credentials (M2M)** as appropriate.
+- Refresh tokens require **offline** scope (SDK-specific naming). Do not assume refresh tokens exist otherwise.
+- Store tokens per platform best practice (secure storage on mobile, httpOnly cookies on web backends).
+- Always validate issuer/audience; prefer the SDK’s built-ins for verification and session management.
+
+## ENV CONFIG & SECRETS
+- Use `.env*` variables and typed config loaders. Never hardcode secrets.
+- Include placeholders and a README snippet showing required variables: KINDE_ISSUER_URL, KINDE_CLIENT_ID, KINDE_CLIENT_SECRET (server only), REDIRECT_URI, POST_LOGOUT_REDIRECT_URI, AUDIENCE, SCOPES, ORG_CODE (if multi-org).
+
+## PLATFORM CHECKLISTS
+- **Next.js / Web (kinde-auth-js)**: 
+  - Add auth routes/callbacks, middleware/edge checks for protected pages.
+  - Server actions/Route Handlers must verify session server-side; avoid exposing tokens to client code.
+- **Node/Express**: 
+  - Session middleware or JWT verification; typed user context; role/permission guards.
+- **Expo / React Native**: 
+  - Configure redirect/deep link schemes; secure token storage; single-flight refresh handling.
+- **Android**: 
+  - Use fragment-safe initialization; pass the correct Context/Activity per SDK docs; handle lifecycle & configuration changes.
+- **iOS (Swift)**: 
+  - Configure URL Types, callbacks; Keychain storage; background refresh constraints.
+- **M2M**:
+  - Use Client Credentials; request only required scopes; set AUDIENCE; implement retry/backoff; handle 401/403 renewals.
+
+## PERMISSIONS / ROLES / ORGS
+- Model role & permission checks in one place (helpers/middleware).
+- Use permission keys consistently; prefer constants/enums. 
+- For multi-tenant orgs, propagate `org_code` through all auth flows and API calls.
+
+## MANAGEMENT API INTEGRATIONS
+- Generate a small typed client (or use official if provided).
+- Add robust error mapping (4xx/5xx), idempotency where sensible, and retries for transient errors.
+- Include pagination helpers and rate-limit backoff.
+
+## BILLING (IF USED)
+- Kinde billing is **Stripe-based only**. Implement Stripe webhooks and plan changes per docs. Do not introduce third-party gateways in Kinde billing paths.
+
+## CODE GENERATION STYLE
+- Prefer **TypeScript** when possible; add minimal types for tokens, session, claims.
+- Keep adapters thin around Kinde SDKs so platform changes don’t ripple through the app.
+- Write small, composable auth guards/hooks/middleware with tests.
+
+## TESTING
+- Unit: mock Kinde SDK surfaces; test guards and claim logic.
+- Integration: spin minimal server/app with test env vars; simulate callback/redirect flows.
+- E2E (web): gated routes redirect when unauthenticated; session persists; logout clears session.
+- Mobile: test deep link handling and token refresh single-flight behavior.
+
+## DIAGNOSTICS & LOGGING
+- Log auth flow steps at INFO with correlation IDs; redact tokens and PII.
+- Surface actionable errors to UI; keep detailed traces in server logs.
+
+## WHEN DOCS CONFLICT OR ARE UNCLEAR
+- Prefer SDK README/examples over generic docs; then most recent commit in kinde-oss.
+- Add a short comment block with the links used and any open issues you found.
+
+## OUTPUT REQUIREMENTS (FOR CURSOR)
+- Produce runnable code with TODO placeholders and a short “How to run” note.
+- At the top of each generated file or PR description, include a tiny “References” block with 1–3 relevant Kinde links.
+- Do not invent APIs or scopes; if unknown, add a clearly marked TODO + link to where to confirm.
+
+## QUICK REMINDERS
+- PKCE for public clients; Client Credentials for M2M.
+- `offline` scope is required for refresh tokens.
+- Use secure storage; avoid leaking tokens to client JS when a backend is present.
+- Keep org/role/permission checks centralized and typed.
+
