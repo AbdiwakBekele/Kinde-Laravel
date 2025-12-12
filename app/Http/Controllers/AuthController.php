@@ -10,20 +10,41 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller {
-    public function redirectToKinde() {
+    public function redirectToKinde(Request $request) {
 
         $state = Str::random(32); // secure random string
         session(['oauth_state' => $state]); // store in session
 
-        $query = http_build_query([
+        $queryParams = [
             'client_id' => config('services.kinde.client_id'),
             'redirect_uri' => config('services.kinde.redirect'),
             'response_type' => 'code',
             'scope' => env('KINDE_SCOPES'),
             'state' => $state,
+        ];
+
+        // Add login_hint - use request parameter if provided, otherwise use static test value
+        if ($request->has('login_hint') && !empty($request->get('login_hint'))) {
+            $queryParams['login_hint'] = $request->get('login_hint');
+        } else {
+            // Static login_hint for testing purposes
+            $queryParams['login_hint'] = 'abdiwakbek3226@gmail.com';
+        }
+
+        // Prompt user to create an account
+        $queryParams['prompt'] = 'create';
+
+        $query = http_build_query($queryParams);
+        $authUrl = config('services.kinde.base_uri') . '/oauth2/auth?' . $query;
+
+        // Log the authorization URL for debugging
+        Log::info('Kinde Authorization URL', [
+            'url' => $authUrl,
+            'login_hint' => $request->get('login_hint'),
+            'has_login_hint' => $request->has('login_hint'),
         ]);
 
-        return redirect(config('services.kinde.base_uri') . '/oauth2/auth?' . $query);
+        return redirect($authUrl);
     }
 
     public function handleKindeCallback(Request $request) {
