@@ -29,10 +29,13 @@ class AuthController extends Controller {
         } else {
             // Static login_hint for testing purposes
             $queryParams['login_hint'] = 'abdiwakbek3226@gmail.com';
+
+            // Static login_hint for testing purposes (username format: username:value)
+            // $queryParams['login_hint'] = 'username:abdiwak';
         }
 
         // Prompt user to create an account
-        $queryParams['prompt'] = 'create';
+        // $queryParams['prompt'] = 'create';
 
         $query = http_build_query($queryParams);
         $authUrl = config('services.kinde.base_uri') . '/oauth2/auth?' . $query;
